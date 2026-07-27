@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sandoura — Every Little Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Cormorant+Garamond:ital@1&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1c1016;
+    --surface: #2a1721;
+    --cream: #fbe9e4;
+    --muted: #c9a3a8;
+    --hair: #d18a4e;
+    --nails: #e85c85;
+    --eyes: #a06bc9;
+    --notes: #e8b878;
+    --accent: var(--hair);
+    --gold: #e8b878;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 55%),
+      radial-gradient(circle at 100% 15%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 55%),
+      radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+      var(--bg);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    transition: background 1.2s ease;
+    padding: 60px 24px 100px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  header{
+    text-align:center;
+    max-width: 640px;
+    margin: 0 auto 50px;
+  }
+
+  .eyebrow{
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-optical-sizing: auto;
+    font-size: clamp(3.2rem, 9vw, 5.2rem);
+    margin: 0 0 18px;
+    letter-spacing: -0.01em;
+    color: var(--gold);
+    text-shadow: 0 0 30px color-mix(in srgb, var(--gold) 45%, transparent), 0 0 60px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  header .sub{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+
+  /* ---- LOCKET TABS ---- */
+  .tabs{
+    display:flex;
+    justify-content:center;
+    gap: 14px;
+    margin: 46px auto 54px;
+    flex-wrap: wrap;
+  }
+
+  .tab{
+    position: relative;
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 14px 30px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.35s ease, border-color 0.35s ease, transform 0.25s ease;
+  }
+
+  .tab:hover{ transform: translateY(-2px); }
+
+  .tab.active{
+    color: var(--cream);
+    border-color: var(--tab-color, var(--hair));
+    box-shadow: 0 0 0 1px var(--tab-color, var(--hair)) inset, 0 8px 24px -8px var(--tab-color, var(--hair));
+  }
+
+  .tab[data-cat="hair"]{ --tab-color: var(--hair); }
+  .tab[data-cat="nails"]{ --tab-color: var(--nails); }
+  .tab[data-cat="eyes"]{ --tab-color: var(--eyes); }
+  .tab[data-cat="notes"]{ --tab-color: var(--notes); }
+
+  /* ---- GALLERY ---- */
+  .gallery{
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+  }
+
+  @media (max-width: 900px){
+    .gallery{ grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px){
+    .gallery{ grid-template-columns: 1fr; }
+  }
+
+  .gallery.is-notes{
+    columns: unset;
+    max-width: 620px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .card{
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 14px 14px 22px;
+    box-shadow: 0 20px 40px -20px rgba(0,0,0,0.6);
+    transform: rotate(var(--r));
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    opacity: 0;
+    animation: riseIn 0.6s ease forwards;
+  }
+
+  .card:hover{
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 0 24px 48px -18px color-mix(in srgb, var(--accent) 40%, black);
+  }
+
+  .card .frame{
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #0f0a0d;
+  }
+
+  .card img,
+  .card video{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    display:block;
+    background: #0f0a0d;
+  }
+
+  .card .seal{
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    margin: 16px auto -28px;
+    position: relative;
+    top: -14px;
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 5px var(--surface);
+  }
+  .card .seal::before,
+  .card .seal::after{
+    content:'';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .card .seal::before{ top: -9px; left: 0; }
+  .card .seal::after{ top: 0; left: -9px; }
+
+  .card p{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.08rem;
+    line-height: 1.45;
+    text-align: center;
+    color: var(--cream);
+    margin: 4px 4px 0;
+  }
+
+  @keyframes riseIn{
+    from{ opacity: 0; transform: translateY(14px) rotate(var(--r)); }
+    to{ opacity: 1; transform: translateY(0) rotate(var(--r)); }
+  }
+
+  /* ---- NOTE CARDS (Notes tab) ---- */
+  .note-card{
+    padding: 26px 30px 24px;
+  }
+
+  .note-card p{
+    font-size: 1.3rem;
+    text-align: left;
+  }
+
+  footer{
+    text-align:center;
+    margin-top: 70px;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .drift-layer{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .drift-heart{
+    position: absolute;
+    bottom: -40px;
+    color: var(--accent);
+    opacity: 0.35;
+    animation: drift-up linear infinite;
+    transition: color 1.2s ease;
+  }
+
+  @keyframes drift-up{
+    0%{ transform: translateY(0) rotate(0deg); opacity: 0; }
+    10%{ opacity: 0.4; }
+    90%{ opacity: 0.25; }
+    100%{ transform: translateY(-110vh) rotate(20deg); opacity: 0; }
+  }
+
+  /* ---- FLOATING MUSIC BUTTON ---- */
+  .music-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    background: var(--surface);
+    color: var(--cream);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    transition: all 0.3s ease;
+  }
+
+  .music-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  header, .tabs, .gallery, footer{
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ animation: none; opacity: 1; }
+    .drift-heart{ animation: none; display: none; }
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MUSIC PLAYER ELEMENT (Change 'music.mp3' to your file name or link) -->
+<audio id="bgMusic" loop preload="auto">
+  <source src="gamed.m4a" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<!-- MUSIC TOGGLE BUTTON -->
+<button id="musicBtn" class="music-btn" aria-label="Toggle Music">🎵 Play Music</button>
+
+<div class="drift-layer" id="driftLayer"></div>
+
+<header>
+  <div class="eyebrow">For Sandoura, with all my love</div>
+  <h1>Sandoura</h1>
+  <p class="sub">Every little detail of you, and every little thing I never say enough — kept somewhere I can visit whenever I miss you.</p>
+</header>
+
+<div class="tabs" id="tabs">
+  <button class="tab" data-cat="hair">Hair</button>
+  <button class="tab" data-cat="nails">Nails</button>
+  <button class="tab" data-cat="eyes">Eyes</button>
+  <button class="tab" data-cat="notes">Notes</button>
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+<footer>Made with love</footer>
+
+<script>
+  // ==========================================================
+  // BACKGROUND MUSIC CONTROL
+  // ==========================================================
+  const bgMusic = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicBtn');
+
+  // Toggle play/pause manually
+  musicBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevents conflict with global click listener
+    if (bgMusic.paused) {
+      bgMusic.play();
+      musicBtn.textContent = '⏸ Pause Music';
+    } else {
+      bgMusic.pause();
+      musicBtn.textContent = '🎵 Play Music';
+    }
+  });
+
+  // Attempt autoplay on the user's first click anywhere on the page
+  function startMusicOnFirstClick() {
+    if (bgMusic.paused) {
+      bgMusic.play().then(() => {
+        musicBtn.textContent = '⏸ Pause Music';
+      }).catch(() => {
+        // Handle blocked autoplay gracefully
+      });
+    }
+    document.removeEventListener('click', startMusicOnFirstClick);
+  }
+  document.addEventListener('click', startMusicOnFirstClick);
+
+  // ==========================================================
+  // PHOTOS & VIDEOS
+  // ==========================================================
+  const photos = {
+    hair: [
+      { type: "video", url: "hair.MP4", text: "😯😯😯🫨🫨🫨🫠🫠🫠." },
+      { type: "video", url: "hair 2.MP4", text: "The way you introduce me your hair😂😂❤️." },
+      { type: "image", url: "photo55.jpg", text: "This exact shade of brown is my favorite color now." },
+      { type: "image", url: "photo61.jpg", text: "SHITTTT, still perfect🫠🫠." },
+      { type: "video", url: "hair3.MP4", text: "I could watch you play with it for hours." },
+      { type: "image", url: "hair6.jpg", text: "Down, up, braided, doesn't matter — it's my favorite view." }
+    ],
+    nails: [
+      { type: "video", url: "nails 1.MP4", text: "Every color you pick becomes my favorite one." },
+      { type: "video", url: "nails 2.MP4", text: "I notice these every time you talk with your hands." },
+      { type: "video", url: "nails 3.MP4", text: "Tiny details, but I always notice them first." },
+        { type: "video", url: "nails4.MP4", text: "Tiny details, but I always notice them first." }
+    ],
+    eyes: [
+      { type: "image", url: "photo5.jpg", text: "The first thing I fell for, still my favorite thing." },
+      { type: "image", url: "face1.jpg", text: "I could get lost in these for hours." },
+      { type: "image", url: "face2.jpg", text: "They say more than words ever could." },
+      { type: "image", url: "face3.jpg", text: "Safe is the way I look at YOU." },
+      { type: "image", url: "face4.jpg", text: "I still remember the first time i looked at your those beautiful diamonds." },
+      { type: "image", url: "face5.jpg", text: "The way they light up when you laugh gets me every time." },
+      { type: "image", url: "face6.jpg", text: "I've never seen a color I love more." }
+    ]
+  };
+
+  // ==========================================================
+  // MESSAGES
+  // ==========================================================
+  const messages = [
+    "You are the first thing I think of when I wake up, and the last thing before I sleep.",
+    "I fall in love with you again every single day, in some small new way.",
+    "Home isn't a place for me anymore. It's wherever you are.",
+    "You make hard days feel bearable and good days feel unforgettable.",
+    "I never knew what I was looking for until I found you.",
+    "Every version of you, every mood, every mess, I love all of it.",
+    "You are my favorite person to tell good news to, and my favorite person to sit in silence with.",
+    "I love the way you say my name.",
+    "Some people search their whole lives for what I get to have with you.",
+    "You are the softest place I know.",
+    "I would choose you again, in every timeline, every time.",
+    "Loving you is the easiest thing I have ever done.",
+    "You make ordinary Fridays feel like something worth remembering.",
+    "I am so proud to be yours.",
+    "Whatever this life brings, I just want to face it next to you."
+  ];
+
+  const tabs = document.getElementById('tabs');
+  const gallery = document.getElementById('gallery');
+  const driftLayer = document.getElementById('driftLayer');
+  let current = 'hair';
+
+  // Ambient drifting hearts
+  const heartCount = 16;
+  for (let i = 0; i < heartCount; i++) {
+    const h = document.createElement('div');
+    h.className = 'drift-heart';
+    h.innerHTML = '♥';
+    const size = Math.random() * 14 + 10;
+    h.style.left = Math.random() * 100 + '%';
+    h.style.fontSize = size + 'px';
+    h.style.animationDuration = (Math.random() * 10 + 14) + 's';
+    h.style.animationDelay = (Math.random() * 14) + 's';
+    driftLayer.appendChild(h);
+  }
+
+  function render(category){
+    current = category;
+    document.body.style.setProperty('--accent', `var(--${category})`);
+    [...tabs.children].forEach(t => t.classList.toggle('active', t.dataset.cat === category));
+
+    gallery.innerHTML = '';
+    gallery.classList.toggle('is-notes', category === 'notes');
+
+    if (category === 'notes') {
+      messages.forEach((text, i) => {
+        const card = document.createElement('div');
+        card.className = 'card note-card';
+        card.style.setProperty('--r', (Math.random() * 3 - 1.5) + 'deg');
+        card.style.animationDelay = (i * 0.05) + 's';
+        card.innerHTML = `<div class="seal" style="margin:0 0 14px; top:0;"></div><p>${text}</p>`;
+        gallery.appendChild(card);
+      });
+      return;
+    }
+
+    photos[category].forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.setProperty('--r', (Math.random() * 6 - 3) + 'deg');
+      card.style.animationDelay = (i * 0.06) + 's';
+      const media = item.type === 'video'
+        ? `<video src="${item.url}" controls playsinline preload="metadata"></video>`
+        : `<img src="${item.url}" alt="" loading="lazy">`;
+      card.innerHTML = `
+        <div class="frame">${media}</div>
+        <div class="seal"></div>
+        <p>${item.text}</p>
+      `;
+      gallery.appendChild(card);
+    });
+  }
+
+  tabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    render(btn.dataset.cat);
+  });
+
+  render(current);
+</script>
+
+</body>
+</html>
